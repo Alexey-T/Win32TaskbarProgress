@@ -86,7 +86,8 @@ end;
 
 procedure TWin7TaskProgressBar.SetProgress(const Value: Integer);
 begin
-  if (glTaskBarInterface <> nil) and (glHandle <> 0) then begin
+  if (glTaskBarInterface <> nil) and (glHandle <> 0) then
+  begin
     glValue := Value;
     if not glMarquee then
       glTaskBarInterface.SetProgressValue(glHandle, UInt64(glValue), UInt64(glMax));
@@ -105,10 +106,12 @@ end;
 
 procedure TWin7TaskProgressBar.SetVisible(const IsVisible: Boolean);
 begin
-  if IsVisible then begin
+  if IsVisible then
+  begin
     if (glStyle <> tbpsNormal) then
       SetStyle(tbpsNormal)
-  end else
+  end
+  else
     SetStyle(tbpsNone);
 
   glVisible := IsVisible;
@@ -118,9 +121,11 @@ procedure TWin7TaskProgressBar.SetMarquee(const IsMarquee: Boolean);
 begin
   if IsMarquee then
     SetStyle(tbpsIndeterminate)
-  else begin
+  else
+  begin
     SetStyle(tbpsNone);
-    if glVisible then begin
+    if glVisible then
+    begin
       SetProgress(glValue);
       SetStyle(tbpsNormal);
     end;
@@ -132,12 +137,11 @@ end;
 constructor TWin7TaskProgressBar.Create(const Handle: THandle);
 const
   CLSID_TaskbarList: TGUID = '{56FDF344-FD6D-11d0-958A-006097C9A090}';
-var
-  OSVersionInfo : TOSVersionInfo;
 begin
-  OSVersionInfo.dwOSVersionInfoSize := sizeof(TOSVersionInfo);
-  if (Handle <> 0) and GetVersionEx(OSVersionInfo) then
-    if OSVersionInfo.dwMajorVersion >= 6 then try
+  if (Handle = 0) then exit;
+
+  if Win32MajorVersion >= 6 then
+    try
       glHandle := Handle;
       CoCreateInstance(CLSID_TaskbarList, nil, CLSCTX_INPROC, ITaskbarList3, glTaskBarInterface);
 
@@ -159,7 +163,8 @@ end;
 
 destructor TWin7TaskProgressBar.Destroy;
 begin
-  if (glTaskBarInterface <> nil) then begin
+  if (glTaskBarInterface <> nil) then
+  begin
     glTaskBarInterface.SetProgressState(glHandle, 0);
     glTaskBarInterface := nil;
   end;
