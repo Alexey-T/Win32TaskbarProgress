@@ -39,18 +39,18 @@ uses
 
 procedure TForm1.ed1Change(Sender: TObject);
 begin
-  Win7TaskbarProgress.Progress:= ed1.Value;
+  GlobalTaskbarProgress.Progress:= ed1.Value;
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
 begin
-  Win7TaskbarProgress:= TWin7TaskProgressBar.Create;
+  GlobalTaskbarProgress:= TWin7TaskProgressBar.Create;
   ComboBoxStyle.ItemIndex:= Ord(tbpsNormal);
 end;
 
 procedure TForm1.ComboBoxStyleChange(Sender: TObject);
 begin
-  Win7TaskbarProgress.Style:= TTaskBarProgressStyle(ComboBoxStyle.ItemIndex);
+  GlobalTaskbarProgress.Style:= TTaskBarProgressStyle(ComboBoxStyle.ItemIndex);
 end;
 
 end.

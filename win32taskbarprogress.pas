@@ -33,29 +33,24 @@ type
     FValue: Integer;
     FStyle: TTaskBarProgressStyle;
     FVisible: Boolean;
-    FMarquee: Boolean;
     FIntf: ITaskbarList3;
     procedure SetProgress(const AValue: Integer);
     procedure SetMax(const AValue: Integer);
     procedure SetStyle(const AValue: TTaskBarProgressStyle);
     procedure SetVisible(const AValue: Boolean);
-    procedure SetMarquee(const AValue: Boolean);
   public
-    // AHandle param should be Application.Handle, not form's Handle
     constructor Create;
     destructor Destroy; override;
     property Max: Integer read FMax write SetMax;
     property Min: Integer read FMin;
     property Style: TTaskBarProgressStyle read FStyle write SetStyle;
     property Progress: Integer read FValue write SetProgress;
-    // Marquee is simplified prop to set Style: Indeterminate or None/Normal
-    property Marquee: Boolean read FMarquee write SetMarquee;
     // Visible is simplified prop to set Style: None or Normal
     property Visible: Boolean read FVisible write SetVisible;
   end;
 
 var
-  Win7TaskbarProgress: TWin7TaskProgressBar = nil;
+  GlobalTaskbarProgress: TWin7TaskProgressBar = nil;
 
 implementation
 
@@ -70,7 +65,7 @@ begin
   if (FIntf <> nil) and (FHandle <> 0) then
   begin
     FValue := AValue;
-    if not FMarquee then
+    if FStyle <> tbpsIndeterminate then
       FIntf.SetProgressValue(FHandle, UInt64(FValue), UInt64(FMax));
   end;
 end;
@@ -96,23 +91,6 @@ begin
     SetStyle(tbpsNone);
 
   FVisible := AValue;
-end;
-
-procedure TWin7TaskProgressBar.SetMarquee(const AValue: Boolean);
-begin
-  if AValue then
-    SetStyle(tbpsIndeterminate)
-  else
-  begin
-    SetStyle(tbpsNone);
-    if FVisible then
-    begin
-      SetProgress(FValue);
-      SetStyle(tbpsNormal);
-    end;
-  end;
-
-  FMarquee := AValue;
 end;
 
 constructor TWin7TaskProgressBar.Create;
