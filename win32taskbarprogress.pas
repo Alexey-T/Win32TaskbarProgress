@@ -55,7 +55,7 @@ type
     FStyle: TTaskBarProgressStyle;
     FVisible: Boolean;
     FMarquee: Boolean;
-    FTaskBarInterface: ITaskbarList3;
+    FIntf: ITaskbarList3;
     procedure SetProgress(const AValue: Integer);
     procedure SetMax(const AValue: Integer);
     procedure SetStyle(const AValue: TTaskBarProgressStyle);
@@ -88,11 +88,11 @@ end;
 
 procedure TWin7TaskProgressBar.SetProgress(const AValue: Integer);
 begin
-  if (FTaskBarInterface <> nil) and (FHandle <> 0) then
+  if (FIntf <> nil) and (FHandle <> 0) then
   begin
     FValue := AValue;
     if not FMarquee then
-      FTaskBarInterface.SetProgressValue(FHandle, UInt64(FValue), UInt64(FMax));
+      FIntf.SetProgressValue(FHandle, UInt64(FValue), UInt64(FMax));
   end;
 end;
 
@@ -100,8 +100,8 @@ procedure TWin7TaskProgressBar.SetStyle(const AValue: TTaskBarProgressStyle);
 const
   Flags: array[TTaskBarProgressStyle] of Cardinal = (0, 1, 2, 4, 8);
 begin
-  if (FTaskBarInterface <> nil) and (FHandle <> 0) then
-    FTaskBarInterface.SetProgressState(FHandle, Flags[AValue]);
+  if (FIntf <> nil) and (FHandle <> 0) then
+    FIntf.SetProgressState(FHandle, Flags[AValue]);
 
   FStyle := AValue;
 end;
@@ -145,10 +145,10 @@ begin
   if Win32MajorVersion >= 6 then
     try
       FHandle := AHandle;
-      CoCreateInstance(CLSID_TaskbarList, nil, CLSCTX_INPROC, ITaskbarList3, FTaskBarInterface);
+      CoCreateInstance(CLSID_TaskbarList, nil, CLSCTX_INPROC, ITaskbarList3, FIntf);
 
-      if (FTaskBarInterface <> nil) then
-        FTaskBarInterface.SetProgressState(FHandle, 0);
+      if (FIntf <> nil) then
+        FIntf.SetProgressState(FHandle, 0);
 
       FMin := 0;
       FMax := 100;
@@ -158,17 +158,17 @@ begin
       SetStyle(FStyle);
       SetVisible(FVisible);
     except
-      FTaskBarInterface := nil;
+      FIntf := nil;
     end;
 end;
 
 
 destructor TWin7TaskProgressBar.Destroy;
 begin
-  if (FTaskBarInterface <> nil) then
+  if (FIntf <> nil) then
   begin
-    FTaskBarInterface.SetProgressState(FHandle, 0);
-    FTaskBarInterface := nil;
+    FIntf.SetProgressState(FHandle, 0);
+    FIntf := nil;
   end;
 end;
 
