@@ -1,9 +1,8 @@
 {*******************************************************************************
 
-Windows 7 TaskBar Progress Unit File
+Windows TaskBar Progress Unit File
 
 originally from:
-https://github.com/tarampampam
 https://stackoverflow.com/questions/5814765/how-do-i-show-progress-in-status-task-bar-button-using-delphi-7
 
 refactored, adapted to Lazarus by Alexey Torgashin:
@@ -19,29 +18,7 @@ unit win32taskbarprogress;
 interface
 
 uses
-  SysUtils, ActiveX;
-
-type
-  ITaskbarList = interface(IUnknown)
-    ['{56FDF342-FD6D-11D0-958A-006097C9A090}']
-    function HrInit: HRESULT; stdcall;
-    function AddTab(hwnd: LongWord): HRESULT; stdcall;
-    function DeleteTab(hwnd: LongWord): HRESULT; stdcall;
-    function ActivateTab(hwnd: LongWord): HRESULT; stdcall;
-    function SetActiveAlt(hwnd: LongWord): HRESULT; stdcall;
-  end;
-
-  ITaskbarList2 = interface(ITaskbarList)
-    ['{602D4995-B13A-429B-A66E-1935E44F4317}']
-    function MarkFullscreenWindow(hwnd: LongWord;
-      fFullscreen: LongBool): HRESULT; stdcall;
-  end;
-
-  ITaskbarList3 = interface(ITaskbarList2)
-    ['{EA1AFB91-9E28-4B86-90E9-9E9F8A5EEFAF}']
-    procedure SetProgressValue(hwnd: LongWord; ullCompleted: UInt64; ullTotal: UInt64); stdcall;
-    procedure SetProgressState(hwnd: LongWord; tbpFlags: Integer); stdcall;
-  end;
+  SysUtils, ShlObj, ComObj;
 
 type
   TTaskBarProgressStyle = (tbpsNone, tbpsIndeterminate, tbpsNormal, tbpsError, tbpsPaused);
@@ -137,15 +114,13 @@ begin
 end;
 
 constructor TWin7TaskProgressBar.Create(const AHandle: THandle);
-const
-  CLSID_TaskbarList: TGUID = '{56FDF344-FD6D-11d0-958A-006097C9A090}';
 begin
   if (AHandle = 0) then exit;
 
   if Win32MajorVersion >= 6 then
     try
       FHandle := AHandle;
-      CoCreateInstance(CLSID_TaskbarList, nil, CLSCTX_INPROC, ITaskbarList3, FIntf);
+      FIntf:= CreateComObject(CLSID_TaskbarList) as ITaskbarList3;
 
       if (FIntf <> nil) then
         FIntf.SetProgressState(FHandle, 0);
