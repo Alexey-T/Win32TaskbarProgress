@@ -49,27 +49,29 @@ type
   TWin7TaskProgressBar = class
   private
     FHandle: THandle;
-    FMin,
-    FMax,
+    FMin: Integer;
+    FMax: Integer;
     FValue: Integer;
     FStyle: TTaskBarProgressStyle;
-    FVisible,
+    FVisible: Boolean;
     FMarquee: Boolean;
     FTaskBarInterface: ITaskbarList3;
-  private
     procedure SetProgress(const AValue: Integer);
     procedure SetMax(const AValue: Integer);
     procedure SetStyle(const AValue: TTaskBarProgressStyle);
     procedure SetVisible(const AValue: Boolean);
     procedure SetMarquee(const AValue: Boolean);
   public
-    constructor Create(const Handle: THandle);
+    // AHandle param should be Application.Handle, not form's Handle
+    constructor Create(const AHandle: THandle);
     destructor Destroy; override;
     property Max: Integer read FMax write SetMax;
     property Min: Integer read FMin;
-    property Progress: Integer read FValue write SetProgress;
-    property Marquee: Boolean read FMarquee write SetMarquee;
     property Style: TTaskBarProgressStyle read FStyle write SetStyle;
+    property Progress: Integer read FValue write SetProgress;
+    // Marquee is simplified prop to set Style: Indeterminate or None/Normal
+    property Marquee: Boolean read FMarquee write SetMarquee;
+    // Visible is simplified prop to set Style: None or Normal
     property Visible: Boolean read FVisible write SetVisible;
   end;
 
@@ -134,15 +136,15 @@ begin
   FMarquee := AValue;
 end;
 
-constructor TWin7TaskProgressBar.Create(const Handle: THandle);
+constructor TWin7TaskProgressBar.Create(const AHandle: THandle);
 const
   CLSID_TaskbarList: TGUID = '{56FDF344-FD6D-11d0-958A-006097C9A090}';
 begin
-  if (Handle = 0) then exit;
+  if (AHandle = 0) then exit;
 
   if Win32MajorVersion >= 6 then
     try
-      FHandle := Handle;
+      FHandle := AHandle;
       CoCreateInstance(CLSID_TaskbarList, nil, CLSCTX_INPROC, ITaskbarList3, FTaskBarInterface);
 
       if (FTaskBarInterface <> nil) then

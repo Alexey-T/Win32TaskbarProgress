@@ -44,10 +44,9 @@ end;
 
 procedure TForm1.FormShow(Sender: TObject);
 begin
+  //initialize after the Application.Handle is inited
   Win7TaskbarProgress:= TWin7TaskProgressBar.Create(Application.{%H-}Handle);
-  Win7TaskbarProgress.Visible:= true;
   ComboBoxStyle.ItemIndex:= Ord(tbpsNormal);
-  ComboBoxStyleChange(Self);
 end;
 
 procedure TForm1.ComboBoxStyleChange(Sender: TObject);
