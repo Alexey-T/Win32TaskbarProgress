@@ -10,32 +10,32 @@ object Form1: TForm1
   Position = poScreenCenter
   LCLVersion = '2.0.10.0'
   object ed1: TSpinEdit
-    Left = 40
+    Left = 32
     Height = 23
     Top = 56
     Width = 107
     OnChange = ed1Change
     TabOrder = 0
   end
-  object ComboBox1: TComboBox
-    Left = 174
+  object ComboBoxStyle: TComboBox
+    Left = 160
     Height = 23
     Top = 56
-    Width = 140
+    Width = 180
     ItemHeight = 15
     Items.Strings = (
-      'None'
-      'Indeterminate'
+      'None (hidden)'
+      'Indeterminate (marquee)'
       'Normal'
       'Error'
       'Paused'
     )
-    OnChange = ComboBox1Change
+    OnChange = ComboBoxStyleChange
     Style = csDropDownList
     TabOrder = 1
   end
   object Label1: TLabel
-    Left = 40
+    Left = 32
     Height = 15
     Top = 36
     Width = 89
@@ -43,7 +43,7 @@ object Form1: TForm1
     ParentColor = False
   end
   object Label2: TLabel
-    Left = 174
+    Left = 160
     Height = 15
     Top = 36
     Width = 27

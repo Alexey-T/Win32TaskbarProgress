@@ -64,13 +64,13 @@ type
     procedure SetMarquee(const IsMarquee: Boolean);
   public
     constructor Create(const Handle: THandle);
+    destructor Destroy; override;
     property Max: Integer read glMax write SetMax default 100;
     property Min: Integer read glMin default 0;
     property Progress: Integer read glValue write SetProgress default 0;
     property Marquee: Boolean read glMarquee write SetMarquee default False;
     property Style: TTaskBarProgressStyle read glStyle write SetStyle default tbpsNone;
     property Visible: Boolean read glVisible write SetVisible default False;
-    destructor Destroy; override;
   end;
 
 var

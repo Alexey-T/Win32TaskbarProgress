@@ -12,11 +12,11 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-    ComboBox1: TComboBox;
+    ComboBoxStyle: TComboBox;
     ed1: TSpinEdit;
     Label1: TLabel;
     Label2: TLabel;
-    procedure ComboBox1Change(Sender: TObject);
+    procedure ComboBoxStyleChange(Sender: TObject);
     procedure ed1Change(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
@@ -46,13 +46,13 @@ procedure TForm1.FormShow(Sender: TObject);
 begin
   Win7TaskbarProgress:= TWin7TaskProgressBar.Create(Application.{%H-}Handle);
   Win7TaskbarProgress.Visible:= true;
-  ComboBox1.ItemIndex:= Ord(tbpsNormal);
-  ComboBox1Change(Self);
+  ComboBoxStyle.ItemIndex:= Ord(tbpsNormal);
+  ComboBoxStyleChange(Self);
 end;
 
-procedure TForm1.ComboBox1Change(Sender: TObject);
+procedure TForm1.ComboBoxStyleChange(Sender: TObject);
 begin
-  Win7TaskbarProgress.Style:= TTaskBarProgressStyle(ComboBox1.ItemIndex);
+  Win7TaskbarProgress.Style:= TTaskBarProgressStyle(ComboBoxStyle.ItemIndex);
 end;
 
 end.
