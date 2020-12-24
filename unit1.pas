@@ -45,7 +45,6 @@ end;
 procedure TForm1.FormShow(Sender: TObject);
 begin
   GlobalTaskbarProgress:= TWin7TaskProgressBar.Create;
-  ComboBoxStyle.ItemIndex:= Ord(tbpsNormal);
 end;
 
 procedure TForm1.ComboBoxStyleChange(Sender: TObject);

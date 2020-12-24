@@ -1,6 +1,5 @@
 {*******************************************************************************
-
-Windows TaskBar Progress Unit File
+Windows TaskBar Progress unit
 
 originally from:
 https://stackoverflow.com/questions/5814765/how-do-i-show-progress-in-status-task-bar-button-using-delphi-7
@@ -8,7 +7,6 @@ https://stackoverflow.com/questions/5814765/how-do-i-show-progress-in-status-tas
 refactored, adapted to Lazarus by Alexey Torgashin:
 https://github.com/Alexey-T/Win32TaskbarProgress
 License: MIT
-
 *******************************************************************************}
 
 unit win32taskbarprogress;
@@ -21,7 +19,7 @@ uses
   SysUtils, ShlObj, ComObj, InterfaceBase, Win32int;
 
 type
-  TTaskBarProgressStyle = (tbpsNone, tbpsAnimation, tbpsNormal, tbpsError, tbpsPaused);
+  TTaskBarProgressStyle = (tbpsNone, tbpsAnimation, tbpsNormal, tbpsError, tbpsPause);
 
   { TWin7TaskProgressBar }
 
@@ -32,12 +30,10 @@ type
     FMax: Integer;
     FValue: Integer;
     FStyle: TTaskBarProgressStyle;
-    FVisible: Boolean;
     FIntf: ITaskbarList3;
     procedure SetProgress(const AValue: Integer);
     procedure SetMax(const AValue: Integer);
     procedure SetStyle(const AValue: TTaskBarProgressStyle);
-    procedure SetVisible(const AValue: Boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -45,8 +41,6 @@ type
     property Min: Integer read FMin;
     property Style: TTaskBarProgressStyle read FStyle write SetStyle;
     property Progress: Integer read FValue write SetProgress;
-    // Visible is simplified prop to set Style: None or Normal
-    property Visible: Boolean read FVisible write SetVisible;
   end;
 
 var
@@ -80,37 +74,22 @@ begin
   FStyle := AValue;
 end;
 
-procedure TWin7TaskProgressBar.SetVisible(const AValue: Boolean);
-begin
-  if AValue then
-  begin
-    if (FStyle <> tbpsNormal) then
-      SetStyle(tbpsNormal)
-  end
-  else
-    SetStyle(tbpsNone);
-
-  FVisible := AValue;
-end;
-
 constructor TWin7TaskProgressBar.Create;
 begin
-  FHandle:= TWin32WidgetSet(WidgetSet).{%H-}AppHandle;
   if Win32MajorVersion < 6 then exit;
+  FHandle:= TWin32WidgetSet(WidgetSet).{%H-}AppHandle;
 
   try
     FIntf:= CreateComObject(CLSID_TaskbarList) as ITaskbarList3;
 
-    if (FIntf <> nil) then
+    if FIntf <> nil then
       FIntf.SetProgressState(FHandle, 0);
 
     FMin := 0;
     FMax := 100;
     FValue := 10;
-    FStyle := tbpsNormal;
-
+    FStyle := tbpsNone;
     SetStyle(FStyle);
-    SetVisible(FVisible);
   except
     FIntf := nil;
   end;
