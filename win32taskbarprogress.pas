@@ -117,7 +117,7 @@ end;
 
 constructor TWin7TaskProgressBar.Create;
 begin
-  FHandle:= TWin32WidgetSet(WidgetSet).AppHandle;
+  FHandle:= TWin32WidgetSet(WidgetSet).{%H-}AppHandle;
   if Win32MajorVersion < 6 then exit;
 
   try
@@ -147,5 +147,6 @@ begin
     FIntf := nil;
   end;
 end;
+
 
 end.
