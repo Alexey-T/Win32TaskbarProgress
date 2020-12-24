@@ -21,7 +21,7 @@ uses
   SysUtils, ShlObj, ComObj, InterfaceBase, Win32int;
 
 type
-  TTaskBarProgressStyle = (tbpsNone, tbpsIndeterminate, tbpsNormal, tbpsError, tbpsPaused);
+  TTaskBarProgressStyle = (tbpsNone, tbpsAnimation, tbpsNormal, tbpsError, tbpsPaused);
 
   { TWin7TaskProgressBar }
 
@@ -65,7 +65,7 @@ begin
   if (FIntf <> nil) and (FHandle <> 0) then
   begin
     FValue := AValue;
-    if FStyle <> tbpsIndeterminate then
+    if FStyle <> tbpsAnimation then
       FIntf.SetProgressValue(FHandle, UInt64(FValue), UInt64(FMax));
   end;
 end;

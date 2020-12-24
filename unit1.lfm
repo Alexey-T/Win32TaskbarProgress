@@ -24,8 +24,8 @@ object Form1: TForm1
     Width = 180
     ItemHeight = 15
     Items.Strings = (
-      'None (hidden)'
-      'Indeterminate (marquee)'
+      'None'
+      'Animation'
       'Normal'
       'Error'
       'Paused'
