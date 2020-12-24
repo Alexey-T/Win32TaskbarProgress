@@ -1,0 +1,8 @@
+lib/
+backup/
+demo
+project1
+*.lps
+*.dbg
+*.ico
+*.exe

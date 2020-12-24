@@ -1,0 +1,53 @@
+object Form1: TForm1
+  Left = 224
+  Height = 202
+  Top = 319
+  Width = 390
+  Caption = 'Win7TaskbarProgress demo'
+  ClientHeight = 202
+  ClientWidth = 390
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '2.0.10.0'
+  object ed1: TSpinEdit
+    Left = 40
+    Height = 23
+    Top = 56
+    Width = 107
+    OnChange = ed1Change
+    TabOrder = 0
+  end
+  object ComboBox1: TComboBox
+    Left = 174
+    Height = 23
+    Top = 56
+    Width = 140
+    ItemHeight = 15
+    Items.Strings = (
+      'None'
+      'Indeterminate'
+      'Normal'
+      'Error'
+      'Paused'
+    )
+    OnChange = ComboBox1Change
+    Style = csDropDownList
+    TabOrder = 1
+  end
+  object Label1: TLabel
+    Left = 40
+    Height = 15
+    Top = 36
+    Width = 89
+    Caption = 'progress (0..100):'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 174
+    Height = 15
+    Top = 36
+    Width = 27
+    Caption = 'style:'
+    ParentColor = False
+  end
+end
