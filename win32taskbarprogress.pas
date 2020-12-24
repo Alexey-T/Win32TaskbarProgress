@@ -6,7 +6,7 @@ originally from:
 https://github.com/tarampampam
 https://stackoverflow.com/questions/5814765/how-do-i-show-progress-in-status-task-bar-button-using-delphi-7
 
-adapted to Lazarus by Alexey Torgashin:
+refactored, adapted to Lazarus by Alexey Torgashin:
 https://github.com/Alexey-T/Win32TaskbarProgress
 License: MIT
 
@@ -19,7 +19,7 @@ unit win32taskbarprogress;
 interface
 
 uses
-  Windows, SysUtils, ActiveX;
+  SysUtils, ActiveX;
 
 type
   ITaskbarList = interface(IUnknown)
@@ -48,29 +48,29 @@ type
 
   TWin7TaskProgressBar = class
   private
-    glHandle: THandle;
-    glMin,
-    glMax,
-    glValue: Integer;
-    glStyle: TTaskBarProgressStyle;
-    glVisible,
-    glMarquee: Boolean;
-    glTaskBarInterface: ITaskbarList3;
+    FHandle: THandle;
+    FMin,
+    FMax,
+    FValue: Integer;
+    FStyle: TTaskBarProgressStyle;
+    FVisible,
+    FMarquee: Boolean;
+    FTaskBarInterface: ITaskbarList3;
   private
-    procedure SetProgress(const Value: Integer);
-    procedure SetMax(const Value: Integer);
-    procedure SetStyle(const Style: TTaskBarProgressStyle);
-    procedure SetVisible(const IsVisible: Boolean);
-    procedure SetMarquee(const IsMarquee: Boolean);
+    procedure SetProgress(const AValue: Integer);
+    procedure SetMax(const AValue: Integer);
+    procedure SetStyle(const AValue: TTaskBarProgressStyle);
+    procedure SetVisible(const AValue: Boolean);
+    procedure SetMarquee(const AValue: Boolean);
   public
     constructor Create(const Handle: THandle);
     destructor Destroy; override;
-    property Max: Integer read glMax write SetMax;
-    property Min: Integer read glMin;
-    property Progress: Integer read glValue write SetProgress;
-    property Marquee: Boolean read glMarquee write SetMarquee;
-    property Style: TTaskBarProgressStyle read glStyle write SetStyle;
-    property Visible: Boolean read glVisible write SetVisible;
+    property Max: Integer read FMax write SetMax;
+    property Min: Integer read FMin;
+    property Progress: Integer read FValue write SetProgress;
+    property Marquee: Boolean read FMarquee write SetMarquee;
+    property Style: TTaskBarProgressStyle read FStyle write SetStyle;
+    property Visible: Boolean read FVisible write SetVisible;
   end;
 
 var
@@ -78,60 +78,60 @@ var
 
 implementation
 
-procedure TWin7TaskProgressBar.SetMax(const Value: Integer);
+procedure TWin7TaskProgressBar.SetMax(const AValue: Integer);
 begin
-  glMax := Value;
-  SetProgress(glValue);
+  FMax := AValue;
+  SetProgress(FValue);
 end;
 
-procedure TWin7TaskProgressBar.SetProgress(const Value: Integer);
+procedure TWin7TaskProgressBar.SetProgress(const AValue: Integer);
 begin
-  if (glTaskBarInterface <> nil) and (glHandle <> 0) then
+  if (FTaskBarInterface <> nil) and (FHandle <> 0) then
   begin
-    glValue := Value;
-    if not glMarquee then
-      glTaskBarInterface.SetProgressValue(glHandle, UInt64(glValue), UInt64(glMax));
+    FValue := AValue;
+    if not FMarquee then
+      FTaskBarInterface.SetProgressValue(FHandle, UInt64(FValue), UInt64(FMax));
   end;
 end;
 
-procedure TWin7TaskProgressBar.SetStyle(const Style: TTaskBarProgressStyle);
+procedure TWin7TaskProgressBar.SetStyle(const AValue: TTaskBarProgressStyle);
 const
   Flags: array[TTaskBarProgressStyle] of Cardinal = (0, 1, 2, 4, 8);
 begin
-  if (glTaskBarInterface <> nil) and (glHandle <> 0) then
-    glTaskBarInterface.SetProgressState(glHandle, Flags[Style]);
+  if (FTaskBarInterface <> nil) and (FHandle <> 0) then
+    FTaskBarInterface.SetProgressState(FHandle, Flags[AValue]);
 
-  glStyle := Style;
+  FStyle := AValue;
 end;
 
-procedure TWin7TaskProgressBar.SetVisible(const IsVisible: Boolean);
+procedure TWin7TaskProgressBar.SetVisible(const AValue: Boolean);
 begin
-  if IsVisible then
+  if AValue then
   begin
-    if (glStyle <> tbpsNormal) then
+    if (FStyle <> tbpsNormal) then
       SetStyle(tbpsNormal)
   end
   else
     SetStyle(tbpsNone);
 
-  glVisible := IsVisible;
+  FVisible := AValue;
 end;
 
-procedure TWin7TaskProgressBar.SetMarquee(const IsMarquee: Boolean);
+procedure TWin7TaskProgressBar.SetMarquee(const AValue: Boolean);
 begin
-  if IsMarquee then
+  if AValue then
     SetStyle(tbpsIndeterminate)
   else
   begin
     SetStyle(tbpsNone);
-    if glVisible then
+    if FVisible then
     begin
-      SetProgress(glValue);
+      SetProgress(FValue);
       SetStyle(tbpsNormal);
     end;
   end;
 
-  glMarquee := IsMarquee;
+  FMarquee := AValue;
 end;
 
 constructor TWin7TaskProgressBar.Create(const Handle: THandle);
@@ -142,31 +142,31 @@ begin
 
   if Win32MajorVersion >= 6 then
     try
-      glHandle := Handle;
-      CoCreateInstance(CLSID_TaskbarList, nil, CLSCTX_INPROC, ITaskbarList3, glTaskBarInterface);
+      FHandle := Handle;
+      CoCreateInstance(CLSID_TaskbarList, nil, CLSCTX_INPROC, ITaskbarList3, FTaskBarInterface);
 
-      if (glTaskBarInterface <> nil) then
-        glTaskBarInterface.SetProgressState(glHandle, 0);
+      if (FTaskBarInterface <> nil) then
+        FTaskBarInterface.SetProgressState(FHandle, 0);
 
-      glMin := 0;
-      glMax := 100;
-      glValue := 10;
-      glStyle := tbpsNormal;
+      FMin := 0;
+      FMax := 100;
+      FValue := 10;
+      FStyle := tbpsNormal;
 
-      SetStyle(glStyle);
-      SetVisible(glVisible);
+      SetStyle(FStyle);
+      SetVisible(FVisible);
     except
-      glTaskBarInterface := nil;
+      FTaskBarInterface := nil;
     end;
 end;
 
 
 destructor TWin7TaskProgressBar.Destroy;
 begin
-  if (glTaskBarInterface <> nil) then
+  if (FTaskBarInterface <> nil) then
   begin
-    glTaskBarInterface.SetProgressState(glHandle, 0);
-    glTaskBarInterface := nil;
+    FTaskBarInterface.SetProgressState(FHandle, 0);
+    FTaskBarInterface := nil;
   end;
 end;
 
