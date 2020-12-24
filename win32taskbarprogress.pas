@@ -1,14 +1,16 @@
 {*******************************************************************************
 
-                      Windows 7 TaskBar Progress Unit File
+Windows 7 TaskBar Progress Unit File
 
-                           File Version: 0.0.0.3
-
-                       https://github.com/tarampampam
+originally from:
+https://github.com/tarampampam
 https://stackoverflow.com/questions/5814765/how-do-i-show-progress-in-status-task-bar-button-using-delphi-7
 
-*******************************************************************************}
+adapted to Lazarus by Alexey Torgashin:
+https://github.com/Alexey-T/Win32TaskbarProgress
+License: MIT
 
+*******************************************************************************}
 
 unit win32taskbarprogress;
 
@@ -17,7 +19,7 @@ unit win32taskbarprogress;
 interface
 
 uses
-  Windows, SysUtils, Forms, ActiveX;
+  Windows, SysUtils, ActiveX;
 
 type
   ITaskbarList = interface(IUnknown)
