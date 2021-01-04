@@ -16,7 +16,7 @@ unit win32taskbarprogress;
 interface
 
 uses
-  SysUtils, ShlObj, ComObj, InterfaceBase, Win32int;
+  SysUtils, ShlObj, ComObj, InterfaceBase, Forms;
 
 type
   TTaskBarProgressStyle = (tbpsNone, tbpsAnimation, tbpsNormal, tbpsError, tbpsPause);
@@ -76,8 +76,10 @@ end;
 
 constructor TWin7TaskProgressBar.Create;
 begin
+  //Windows XP has version 5 and doesn't support ITaskbarList3
   if Win32MajorVersion < 6 then exit;
-  FHandle:= TWin32WidgetSet(WidgetSet).{%H-}AppHandle;
+
+  FHandle:= Application.{%H-}Handle;
 
   try
     FIntf:= CreateComObject(CLSID_TaskbarList) as ITaskbarList3;
